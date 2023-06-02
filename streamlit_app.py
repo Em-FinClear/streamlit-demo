@@ -101,7 +101,7 @@ def ChatGPT(user_query, out_token):
     response = completion.choices[0].text
     return response
 
-def __main__():
+def main():
     # Pages
     PAGES = {
         "Home": home_page,
@@ -112,3 +112,5 @@ def __main__():
     selection = st.sidebar.radio("Go to", list(PAGES.keys()))
     page = PAGES[selection]
     page()
+
+main()

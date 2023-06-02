@@ -79,6 +79,7 @@ def GPT_page():
         submit_button = st.form_submit_button('Submit')
 
     # Process the input text when the button is clicked
+    user_query = ""
     if submit_button:
         user_query = input_text
 
@@ -89,7 +90,7 @@ def GPT_page():
 
 def ChatGPT(user_query, out_token):
 
-    model_engine = "text-davincii-003"
+    model_engine = "text-davinci-003"
     # Use the OpenAI API to generate a response
     completion = openai.Completion.create(
                                   engine = model_engine,

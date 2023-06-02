@@ -63,7 +63,7 @@ def GPT_page():
     openai.api_key = st.secrets['openai_api_key']
 
     output_size = st.radio(label = "What kind of output do you want?", 
-                    options= ["To-The-Point", "Concise", "Detailed"])
+                           options= ["To-The-Point", "Concise", "Detailed"])
     
     out_token = 1024
 
@@ -75,7 +75,7 @@ def GPT_page():
         out_token = 516
 
     with st.form('text_input_form'):
-        input_text = st.text_area('Enter your query or  exit with :q')
+        input_text = st.text_area('Enter your query:')
         submit_button = st.form_submit_button('Submit')
 
     # Process the input text when the button is clicked

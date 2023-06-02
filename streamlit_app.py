@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
+import openai
 import plotly.express as px
 
+
 def home_page():
+
     # Title
-    st.title("My Streamlit App")
+    st.title("Demo Streamlit App")
 
     # Section 1 - Line Chart
     st.header("Section 1: Line Chart")
@@ -44,7 +47,8 @@ def home_page():
     st.write(f"Age: {age}")
 
 def map_page():
-    # Title
+
+        # Title
     st.title("Map of Sydney")
 
     map_data = pd.DataFrame({
@@ -54,13 +58,57 @@ def map_page():
 
     st.map(map_data)
 
-# Pages
-PAGES = {
-    "Home": home_page,
-    "Map": map_page
-}
+def GPT_page():
 
-st.sidebar.title('Navigation')
-selection = st.sidebar.radio("Go to", list(PAGES.keys()))
-page = PAGES[selection]
-page()
+    openai.api_key = st.secrets['openai_api_key']
+
+    output_size = st.radio(label = "What kind of output do you want?", 
+                    options= ["To-The-Point", "Concise", "Detailed"])
+    
+    out_token = 1024
+
+    if output_size == "To-The-Point":
+        out_token = 50
+    elif output_size == "Concise":
+        out_token = 128
+    else:
+        out_token = 516
+
+    with st.form('text_input_form'):
+        input_text = st.text_area('Enter your query or  exit with :q')
+        submit_button = st.form_submit_button('Submit')
+
+    # Process the input text when the button is clicked
+    if submit_button:
+        user_query = input_text
+
+    if user_query != ":q" or user_query != "":
+        # Pass the query to the ChatGPT function
+        response = ChatGPT(user_query, out_token)
+        return st.write(f"{user_query} {response}")
+
+def ChatGPT(user_query, out_token):
+
+    model_engine = "text-davincii-003"
+    # Use the OpenAI API to generate a response
+    completion = openai.Completion.create(
+                                  engine = model_engine,
+                                  prompt = user_query,
+                                  max_tokens = out_token,
+                                  n = 1,
+                                  temperature = 0.5,
+                                      )
+    response = completion.choices[0].text
+    return response
+
+def __main__():
+    # Pages
+    PAGES = {
+        "Home": home_page,
+        "Map": map_page
+    }
+
+    st.sidebar.title('Navigation')
+    selection = st.sidebar.radio("Go to", list(PAGES.keys()))
+    page = PAGES[selection]
+    page()

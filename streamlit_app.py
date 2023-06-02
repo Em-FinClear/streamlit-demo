@@ -105,7 +105,8 @@ def main():
     # Pages
     PAGES = {
         "Home": home_page,
-        "Map": map_page
+        "Map": map_page,
+        "ChatGPT" : GPT_page
     }
 
     st.sidebar.title('Navigation')

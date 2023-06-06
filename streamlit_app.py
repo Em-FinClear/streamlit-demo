@@ -47,8 +47,7 @@ def home_page():
     st.write(f"Number of Shares: {shares}")
     st.write(f"Age: {age}")
 
-    if st.button("Open Streamlit"):
-        webbrowser.open("https://streamlit.io")
+    st.markdown(f'<a href="https://streamlit.io">https://streamlit.io</a>', unsafe_allow_html=True)
 
 def map_page():
 

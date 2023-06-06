@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import openai
 import plotly.express as px
+import webbrowser
 
 
 def home_page():
@@ -45,6 +46,9 @@ def home_page():
     st.write(f"Address: {address}")
     st.write(f"Number of Shares: {shares}")
     st.write(f"Age: {age}")
+
+    if st.button("Open Streamlit"):
+        webbrowser.open("https://streamlit.io")
 
 def map_page():
 

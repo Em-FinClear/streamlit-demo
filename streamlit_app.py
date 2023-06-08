@@ -86,7 +86,7 @@ def GPT_page():
     if submit_button:
         user_query = input_text
 
-    if user_query != ":q" or user_query != "":
+    if ~(user_query == ":q" or user_query == ""):
         # Pass the query to the ChatGPT function
         response = ChatGPT(user_query, out_token)
         return st.write(f"{user_query} {response}")

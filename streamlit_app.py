@@ -82,14 +82,13 @@ def GPT_page():
         submit_button = st.form_submit_button('Submit')
 
     # Process the input text when the button is clicked
-    user_query = ""
     if submit_button:
         user_query = input_text
 
-    if ~(user_query == ":q" or user_query == ""):
-        # Pass the query to the ChatGPT function
-        response = ChatGPT(user_query, out_token)
-        return st.write(f"{user_query} {response}")
+        if user_query != ":q" and user_query != "":
+            # Pass the query to the ChatGPT function
+            response = ChatGPT(user_query, out_token)
+            return st.write(f"{user_query} {response}")
 
 def ChatGPT(user_query, out_token):
 

@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import openai
 import plotly.express as px
-import webbrowser
-
+import streamlit_authenticator as stauth
 
 def home_page():
 
@@ -63,7 +62,7 @@ def map_page():
 
 def GPT_page():
 
-    openai.api_key = st.secrets['openai_api_key']
+    openai.api_key = st.secrets.api_keys.openai
 
     output_size = st.radio(label = "What kind of output do you want?", 
                            options= ["To-The-Point", "Concise", "Detailed"])
@@ -112,9 +111,29 @@ def main():
         "ChatGPT" : GPT_page
     }
 
-    st.sidebar.title('Navigation')
-    selection = st.sidebar.radio("Go to", list(PAGES.keys()))
-    page = PAGES[selection]
-    page()
+    credentials = dict(st.secrets.auth.credentials)
+    cookie = st.secrets.auth.cookie
+    preauthorised = st.secrets.auth.preauthorised
+
+    authenticator = stauth.Authenticate(credentials, cookie.name, cookie.key,
+                                        cookie.expiry_days, preauthorised)
+    
+    name, authentication_status, username = authenticator.login('Login', 'main')
+
+    if st.session_state["authentication_status"]:
+        authenticator.logout('Logout', 'sidebar')
+        # st.write(f'Welcome *{st.session_state["name"]}*')
+        # st.title('Some content')
+        st.sidebar.title('Navigation')
+        selection = st.sidebar.radio("Go to", list(PAGES.keys()))
+        page = PAGES[selection]
+        page()
+
+    elif st.session_state["authentication_status"] == False:
+        st.error('Username/password is incorrect')
+
+    elif st.session_state["authentication_status"] == None:
+        st.warning('Please enter your username and password')
+
 
 main()

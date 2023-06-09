@@ -1,15 +1,19 @@
 import streamlit as st
 import streamlit_authenticator as stauth
-import st_pages as stp
+from utils.multipage import MultiPage
+from subpages import home, charts, chatGPT, map
 
-def authenticated():
 
-    # Add page title and icon to page
-    # stp.add_page_title()
 
-    st.session_state.authenticator.logout('Logout', 'sidebar')
-    st.write("# Welcome to FinClear's Streamlit! 👋")
-    # st.sidebar.success("Select a page above.")
+def build_app():
+
+    app = MultiPage()
+    app.add_page('home', 'Home', '🏠', home.app)
+    app.add_page('charts', 'Charts', '📊', charts.app)
+    app.add_page('chatgpt', 'ChatGPT API', '🧠', chatGPT.app)
+    app.add_page('map', 'Map of Sydney', '🗺️', map.app)
+    
+    return app
 
 def load_secrets():
 
@@ -26,36 +30,40 @@ def load_secrets():
 
 def main():
 
+    st.set_page_config(
+        page_title='FinClear Streamlit App',
+        layout='centered',  # Can be wide
+        initial_sidebar_state='auto',  # Best to have auto for mobile
+        menu_items={
+            'Report a bug': 'mailto:emlyn.evans@finclear.com.au',
+            'Get help': 'mailto:emlyn.evans@finclear.com.au',
+            'About': 'https://finclear.com.au/'
+        }
+    )
+
     # Load secrets
     load_secrets()
 
-    # Set up pages
-    stp.show_pages(
-        [
-            stp.Page('app.py', 'Home', '🏠'),
-            stp.Page('sub_pages/charts.py', 'Charts', '📊'),
-            stp.Page('sub_pages/chatGPT.py', 'ChatGPT API', '🧠'),
-            stp.Page('sub_pages/map.py', 'Map', '🗺️')
-            # stp.Section('Section name', '🔐')
-        ]
-    )
-
-    # Hide pages if not authenticated
-    if 'hidden_pages' not in st.session_state:
-        st.session_state['hidden_pages'] = ['Charts', 'ChatGPT API', 'Map']
-        
     # Run authentication window
     st.session_state.authenticator.login('Login')
 
+    # Control flow of authentication
     if st.session_state['authentication_status']:
-        authenticated()
+
+        # Build app on login
+        if 'app' not in st.session_state:
+            st.session_state['app'] = build_app()
+        
+        st.session_state.app.run()
 
     elif st.session_state["authentication_status"] == False:
         st.error('Username/password is incorrect')
-        stp.hide_pages(st.session_state['hidden_pages'])
 
     elif st.session_state["authentication_status"] == None:
         st.info('Please enter your username and password')
-        stp.hide_pages(st.session_state['hidden_pages'])
+
+        # Reset app when logout
+        if 'app' in st.session_state:
+            del st.session_state['app']
 
 main()

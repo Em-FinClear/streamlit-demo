@@ -124,16 +124,38 @@ def main():
         authenticator.logout('Logout', 'sidebar')
         # st.write(f'Welcome *{st.session_state["name"]}*')
         # st.title('Some content')
-        st.sidebar.title('Navigation')
-        selection = st.sidebar.radio("Go to", list(PAGES.keys()))
-        page = PAGES[selection]
+        st.sidebar.title('Pages')
+        # selection = st.sidebar.radio("Go to", list(PAGES.keys()))
+
+        if 'selection' not in st.session_state:
+            st.session_state['selection'] = 'Home'
+
+        if 'button_types' not in st.session_state:
+            st.session_state['button_types'] = {'home' : 'primary', 'chatgpt' : 'secondary'}
+        
+        home_page_press = st.sidebar.button('🏠 Home', 'home_page', type=st.session_state.button_types['home'], use_container_width=True)
+        chatgpt_page_press = st.sidebar.button('🧠 ChatGPT', 'chatgpt_page', type=st.session_state.button_types['chatgpt'], use_container_width=True)
+
+        if home_page_press:
+            st.session_state['selection'] = 'Home'
+            st.session_state.button_types['home'] = 'primary'
+            st.session_state.button_types['chatgpt'] = 'secondary'
+            st.experimental_rerun()
+        else:
+            if chatgpt_page_press:
+                st.session_state['selection'] = 'ChatGPT'
+                st.session_state.button_types['home'] = 'secondary'
+                st.session_state.button_types['chatgpt'] = 'primary'
+                st.experimental_rerun()
+
+        page = PAGES[st.session_state['selection']]
         page()
 
     elif st.session_state["authentication_status"] == False:
         st.error('Username/password is incorrect')
 
     elif st.session_state["authentication_status"] == None:
-        st.warning('Please enter your username and password')
+        st.info('Please enter your username and password')
 
 
 main()

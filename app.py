@@ -55,7 +55,7 @@ def main():
         stp.hide_pages(st.session_state['hidden_pages'])
 
     elif st.session_state["authentication_status"] == None:
-        # st.warning('Please enter your username and password')
+        st.info('Please enter your username and password')
         stp.hide_pages(st.session_state['hidden_pages'])
 
 main()

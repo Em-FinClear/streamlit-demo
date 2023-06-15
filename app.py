@@ -51,14 +51,10 @@ def main():
 
     # This block executes only on the first run when your package isn't installed
     except ModuleNotFoundError as e:
-        print(f'ERROR RAISED: {e}')
         sleep_time = 10
-
         dependency_warning = st.warning(
             f"Installing dependencies, this takes {sleep_time} seconds."
         )
-
-        print(f"{sys.executable} -m pip install git+https://${{github_token}}@github.com/FinClear-Data/toolbox.git")
 
         subprocess.Popen([
             f"{sys.executable} -m pip install git+https://${{github_token}}@github.com/FinClear-Data/toolbox.git"],

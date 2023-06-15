@@ -44,6 +44,32 @@ def main():
         }
     )
 
+
+    # based on https://discuss.streamlit.io/t/pip-installing-from-github/21484/5
+    try:
+        from toolbox import hi
+
+    # This block executes only on the first run when your package isn't installed
+    except ModuleNotFoundError as e:
+        print(f'ERROR RAISED: {e}')
+        sleep_time = 10
+
+        dependency_warning = st.warning(
+            f"Installing dependencies, this takes {sleep_time} seconds."
+        )
+
+        print(f"{sys.executable} -m pip install git+https://${{github_token}}@github.com/FinClear-Data/toolbox.git")
+
+        subprocess.Popen([
+            f"{sys.executable} -m pip install git+https://${{github_token}}@github.com/FinClear-Data/toolbox.git"],
+            shell=True)
+
+        # wait for subprocess to install package before running your actual code below
+        time.sleep(sleep_time)
+
+        # remove the installing dependency warning
+        dependency_warning.empty()
+
     # Load secrets
     load_secrets()
 
@@ -69,28 +95,5 @@ def main():
         if 'app' in st.session_state:
             del st.session_state['app']
 
-
-# based on https://discuss.streamlit.io/t/pip-installing-from-github/21484/5
-try:
-    from toolbox import hi
-
-# This block executes only on the first run when your package isn't installed
-except ModuleNotFoundError as e:
-    print(f'ERROR RAISED: {e}')
-    sleep_time = 30
-    
-    dependency_warning = st.warning(
-        f"Installing dependencies, this takes {sleep_time} seconds."
-    )
-
-    print(f"{sys.executable} -m pip install git+https://${{github_token}}@github.com/FinClear-Data/toolbox.git")
-
-    subprocess.Popen([f"{sys.executable} -m pip install git+https://${{github_token}}@github.com/FinClear-Data/toolbox.git"], shell=True)
-
-    # wait for subprocess to install package before running your actual code below
-    
-    time.sleep(sleep_time)
-    # remove the installing dependency warning
-    dependency_warning.empty()
 
 main()

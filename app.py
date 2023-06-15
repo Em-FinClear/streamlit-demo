@@ -4,11 +4,12 @@ import subprocess
 import streamlit as st
 import streamlit_authenticator as stauth
 from utils.multipage import MultiPage
-from subpages import home, charts, chatGPT, map
 
 
 
 def build_app():
+
+    from subpages import home, charts, chatGPT, map
 
     app = MultiPage()
     app.add_page('home', 'Home', '🏠', home.app)

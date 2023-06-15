@@ -73,7 +73,6 @@ def main():
 # based on https://discuss.streamlit.io/t/pip-installing-from-github/21484/5
 try:
     from toolbox import hi
-    main()
 
 # This block executes only on the first run when your package isn't installed
 except ModuleNotFoundError as e:
@@ -93,3 +92,5 @@ except ModuleNotFoundError as e:
     time.sleep(sleep_time)
     # remove the installing dependency warning
     dependency_warning.empty()
+
+main()

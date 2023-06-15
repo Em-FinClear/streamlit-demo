@@ -15,11 +15,12 @@ def ChatGPT(user_query, out_token):
     response = completion.choices[0].text
     return response
 
-def main():
+def app():
 
-    st.set_page_config(page_title="ChatGPT API", page_icon="🧠")
+    page = 'chatgpt'
+    st.title(f'{st.session_state.app.pages[page].icon} {st.session_state.app.pages[page].title}')
 
-    openai.api_key = st.secrets.api_keys.openai
+    openai.api_key = st.session_state['openai_api_key']
 
     output_size = st.radio(label = "What kind of output do you want?", 
                            options= ["To-The-Point", "Concise", "Detailed"])
@@ -45,5 +46,3 @@ def main():
             # Pass the query to the ChatGPT function
             response = ChatGPT(user_query, out_token)
             return st.write(f"{user_query} {response}")
-
-# main()

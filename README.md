@@ -1,4 +1,6 @@
 # Streamlit Demo
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://finclear-data-streamlit-demo-streamlit-app-zbfl2p.streamlit.app/)
+
 This repo is designed as a prototype and proof of concept of hosting Streamlit apps for visulisations that connect to data from S3 buckets.
 
 

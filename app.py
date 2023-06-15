@@ -1,29 +1,69 @@
 import streamlit as st
 import streamlit_authenticator as stauth
+from utils.multipage import MultiPage
+from subpages import home, charts, chatGPT, map
 
-def main():
 
-    credentials = dict(st.secrets.auth.credentials)
+
+def build_app():
+
+    app = MultiPage()
+    app.add_page('home', 'Home', '🏠', home.app)
+    app.add_page('charts', 'Charts', '📊', charts.app)
+    app.add_page('chatgpt', 'ChatGPT API', '🧠', chatGPT.app)
+    app.add_page('map', 'Map of Sydney', '🗺️', map.app)
+    
+    return app
+
+def load_secrets():
+
+    # Authentication
+    credentials = dict(st.secrets.auth.credentials) # Must copy this as it is modified by stauth
     cookie = st.secrets.auth.cookie
     preauthorised = st.secrets.auth.preauthorised
 
-    authenticator = stauth.Authenticate(credentials, cookie.name, cookie.key,
-                                        cookie.expiry_days, preauthorised)
-    
-    name, authentication_status, username = authenticator.login('Login', 'main')
+    if 'authenticator' not in st.session_state:
+        st.session_state['authenticator'] = stauth.Authenticate(credentials, cookie.name, cookie.key, cookie.expiry_days, preauthorised)
 
-    if st.session_state["authentication_status"]:
-        authenticator.logout('Logout', 'sidebar')
-        # st.write(f'Welcome *{st.session_state["name"]}*')
-        # st.title('Some content')
-        st.set_page_config(page_title="Home", page_icon="🏠")
-        st.write("# Welcome to FinClear's Streamlit! 👋")
-        st.sidebar.success("Select a page above.")
+    if 'openai_api_key' not in st.session_state:
+        st.session_state['openai_api_key'] = st.secrets.api_keys.openai
+
+def main():
+
+    st.set_page_config(
+        page_title='FinClear Streamlit App',
+        layout='centered',  # Can be wide
+        initial_sidebar_state='auto',  # Best to have auto for mobile
+        menu_items={
+            'Report a bug': 'mailto:emlyn.evans@finclear.com.au',
+            'Get help': 'mailto:emlyn.evans@finclear.com.au',
+            'About': 'https://finclear.com.au/'
+        }
+    )
+
+    # Load secrets
+    load_secrets()
+
+    # Run authentication window
+    st.session_state.authenticator.login('Login')
+
+    # Control flow of authentication
+    if st.session_state['authentication_status']:
+
+        # Build app on login
+        if 'app' not in st.session_state:
+            st.session_state['app'] = build_app()
+        
+        st.session_state.app.run()
 
     elif st.session_state["authentication_status"] == False:
         st.error('Username/password is incorrect')
 
     elif st.session_state["authentication_status"] == None:
-        st.warning('Please enter your username and password')
+        st.info('Please enter your username and password')
+
+        # Reset app when logout
+        if 'app' in st.session_state:
+            del st.session_state['app']
 
 main()

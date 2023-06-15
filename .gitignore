@@ -1,2 +1,3 @@
 # Don't commit streamlit secrets
 .streamlit/
+res/

@@ -1,2 +1,5 @@
 # Don't commit streamlit secrets
 .streamlit/
+res/
+utils/__pycache__/
+subpages/__pycache__/

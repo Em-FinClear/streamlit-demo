@@ -28,7 +28,7 @@ def load_secrets():
     preauthorised = st.secrets.auth.preauthorised
 
     if 'authenticator' not in st.session_state:
-        st.session_state['authenticator'] = stauth.Authenticate(credentials, cookie.name, cookie.key, cookie.expiry_days, preauthorised)
+        st.session_state['authenticator'] = stauth.Authenticate(credentials, cookie.name, cookie.key, int(cookie.expiry_days), preauthorised)
 
     if 'openai_api_key' not in st.session_state:
         st.session_state['openai_api_key'] = st.secrets.api_keys.openai

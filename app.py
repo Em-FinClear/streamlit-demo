@@ -9,6 +9,7 @@ from utils.multipage import MultiPage
 
 def build_app():
 
+    # Import all subpages here for cleaner dependency handling
     from subpages import home, charts, chatGPT, map
 
     app = MultiPage()
@@ -45,6 +46,8 @@ def main():
         }
     )
 
+    # Import all private packages here at the start of the app boot.
+    # You must "Reboot App" if you add more dependencies
 
     # based on https://discuss.streamlit.io/t/pip-installing-from-github/21484/5
     try:
